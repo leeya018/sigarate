@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        sigarate: "url('/images/sigarate.png')",
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
