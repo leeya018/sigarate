@@ -21,18 +21,9 @@ type CigaretteLog = {
 export default function Counter({ target }: CounterType) {
   const [counter, setCounter] = useState<number>(target);
 
+  // Update the counter state when the target changes
   useEffect(() => {
-    // Load the latest counter for today from localStorage
-    const cigaretteLogsStr = localStorage.getItem("cigaretteLogs");
-    if (cigaretteLogsStr) {
-      const cigaretteLogs: CigaretteLog[] = JSON.parse(cigaretteLogsStr);
-      const todayLog = cigaretteLogs.find(
-        (log) => log.date === getCurrentDate()
-      );
-      if (todayLog) {
-        setCounter(todayLog.counter);
-      }
-    }
+    setCounter(target); // Synchronize counter with target
   }, [target]);
 
   const handleClick = () => {
@@ -58,7 +49,7 @@ export default function Counter({ target }: CounterType) {
         } else {
           // Create a new log for today
           cigaretteLogs.push({ date: today, counter: newCounter });
-          localStorage.setItem("target", target - 2 + "");
+          localStorage.setItem("target", target.toString());
         }
 
         // Save the updated logs back to localStorage
