@@ -3,9 +3,22 @@
 import Counter from "@/components/Counter";
 import React, { useEffect, useState } from "react";
 import moment from "moment"; // Using moment for date manipulation
+import ResetModal from "@/components/ResetModal";
 
 export default function MainPage() {
   const [target, setTarget] = useState(20);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setTarget(20);
+    localStorage.setItem("target", "20");
+    window.location.reload();
+    setModalOpen(false);
+  };
 
   // Utility function to check if 2 minutes have passed and update the target accordingly
   const checkAndUpdateTarget = () => {
@@ -22,7 +35,7 @@ export default function MainPage() {
       // If 1 week or more has passed, decrease the target
       if (weeksPassed >= 1) {
         newTarget = Math.max(newTarget - 5 * weeksPassed, 0); // Decrease by 5 for every week that has passed
-      
+
         localStorage.setItem("target", newTarget.toString());
         localStorage.setItem("lastUpdated", moment().format()); // Update the last updated timestamp
       }
@@ -49,16 +62,15 @@ export default function MainPage() {
 
   return (
     <div className="h-screen w-screen bg-sigarate">
-      {/* <button
+      <button
         className="text-xl font-semibold text-white"
-        onClick={() => {
-          setTarget((prev) => prev - 2);
-          localStorage.removeItem("counter");
-        }}
+        onClick={handleOpenModal}
       >
         reset
-      </button> */}
+      </button>
       <Counter target={target} />
+
+      <ResetModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 }
