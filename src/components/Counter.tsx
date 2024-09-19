@@ -26,6 +26,20 @@ export default function Counter({ target }: CounterType) {
     setCounter(target); // Synchronize counter with target
   }, [target]);
 
+  useEffect(() => {
+    // Load the latest counter for today from localStorage
+    const cigaretteLogsStr = localStorage.getItem("cigaretteLogs");
+    if (cigaretteLogsStr) {
+      const cigaretteLogs: CigaretteLog[] = JSON.parse(cigaretteLogsStr);
+      const todayLog = cigaretteLogs.find(
+        (log) => log.date === getCurrentDate()
+      );
+      if (todayLog) {
+        setCounter(todayLog.counter);
+      }
+    }
+  }, [target]);
+
   const handleClick = () => {
     setCounter((prev) => {
       if (prev > 0) {

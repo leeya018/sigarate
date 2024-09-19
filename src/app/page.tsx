@@ -22,7 +22,7 @@ export default function MainPage() {
       // If 1 week or more has passed, decrease the target
       if (weeksPassed >= 1) {
         newTarget = Math.max(newTarget - 5 * weeksPassed, 0); // Decrease by 5 for every week that has passed
-
+      
         localStorage.setItem("target", newTarget.toString());
         localStorage.setItem("lastUpdated", moment().format()); // Update the last updated timestamp
       }
