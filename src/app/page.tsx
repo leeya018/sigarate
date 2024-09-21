@@ -68,7 +68,7 @@ const Main = () => {
       <Header />
       <main className="flex-grow flex flex-col justify-center items-center text-center px-4">
         <h1 className="text-3xl font-bold mb-4">
-          Cigarettes You Can Smoke Today:
+          מספר סיגריות שניתן לעשן היום
         </h1>
         <div className="text-6xl font-bold -600 mb-6">{cigarettesLeft}</div>
         {cigarettesLeft > 0 && (
@@ -76,7 +76,7 @@ const Main = () => {
             onClick={handleDecrement}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700"
           >
-            Smoke 1
+            לוקח סיגריה
           </button>
         )}
       </main>

@@ -17,18 +17,18 @@ const Header = () => {
     <header className="bg-blue-600 text-white p-4">
       <nav className="container mx-auto flex justify-between">
         <div className="text-lg font-bold">Cigarette Tracker</div>
-        <ul className="flex space-x-4">
-          <li>
-            <Link href="/" className={`hover:underline ${isActive("/")}`}>
-              Main
-            </Link>
-          </li>
+        <ul className="flex space-x-4 ">
           <li>
             <Link
               href="/settings"
-              className={`hover:underline ${isActive("/settings")}`}
+              className={`hover:underline  ${isActive("/settings")}`}
             >
-              Settings
+              הגדרות
+            </Link>
+          </li>
+          <li>
+            <Link href="/" className={`hover:underline  ${isActive("/")}`}>
+              ראשי
             </Link>
           </li>
         </ul>
