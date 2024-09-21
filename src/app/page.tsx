@@ -1,76 +1,87 @@
 "use client";
+import React, { useState, useEffect } from "react";
+import Header from "@/components/Header";
 
-import Counter from "@/components/Counter";
-import React, { useEffect, useState } from "react";
-import moment from "moment"; // Using moment for date manipulation
-import ResetModal from "@/components/ResetModal";
+const Main = () => {
+  const [cigarettesLeft, setCigarettesLeft] = useState(0);
 
-export default function MainPage() {
-  const [target, setTarget] = useState(20);
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const checkReset = () => {
+    const initialCigarettes =
+      parseInt(localStorage.getItem("initialCigarettes"), 10) || 0;
+    const lastResetTime = localStorage.getItem("lastResetTime");
+    const now = new Date();
 
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
+    if (lastResetTime) {
+      const lastResetDate = new Date(lastResetTime);
+      const timePassed = now.getTime() - lastResetDate.getTime();
+      // const oneDayInMs = 5 * 1000; // milliseconds in one day
+      const oneDayInMs = 24 * 60 * 60 * 1000; // milliseconds in one day
 
-  const handleCloseModal = () => {
-    setTarget(20);
-    localStorage.setItem("target", "20");
-    window.location.reload();
-    setModalOpen(false);
-  };
+      if (timePassed >= oneDayInMs) {
+        // More than a day has passed, reset the cigarette count
+        setCigarettesLeft(initialCigarettes);
 
-  // Utility function to check if 2 minutes have passed and update the target accordingly
-  const checkAndUpdateTarget = () => {
-    const lastUpdatedStr = localStorage.getItem("lastUpdated");
-    const currentTargetStr = localStorage.getItem("target");
-
-    // Initialize with 22 if not already set
-    let newTarget = currentTargetStr ? parseInt(currentTargetStr) : 20;
-
-    if (lastUpdatedStr) {
-      const lastUpdated = moment(lastUpdatedStr);
-      const weeksPassed = moment().diff(lastUpdated, "weeks");
-
-      // If 1 week or more has passed, decrease the target
-      if (weeksPassed >= 1) {
-        newTarget = Math.max(newTarget - 5 * weeksPassed, 0); // Decrease by 5 for every week that has passed
-
-        localStorage.setItem("target", newTarget.toString());
-        localStorage.setItem("lastUpdated", moment().format()); // Update the last updated timestamp
+        const decreaseAmount = parseInt(
+          localStorage.getItem("decreaseAmount"),
+          10
+        );
+        localStorage.setItem(
+          "cigarettesLeft",
+          initialCigarettes - decreaseAmount
+        ) || 0;
+        localStorage.setItem(
+          "initialCigarettes",
+          initialCigarettes - decreaseAmount
+        ) || 0;
+        localStorage.setItem("lastResetTime", now.toISOString());
+      } else {
+        // Less than a day has passed, retrieve the remaining cigarettes from localStorage
+        const storedCigarettes =
+          parseInt(localStorage.getItem("cigarettesLeft"), 10) ||
+          initialCigarettes;
+        setCigarettesLeft(storedCigarettes);
       }
     } else {
-      // If no lastUpdated is present, set it to the current date
-      localStorage.setItem("lastUpdated", moment().format());
+      // First time or reset hasn't been done yet, set the initial values
+      setCigarettesLeft(initialCigarettes);
+      localStorage.setItem("cigarettesLeft", initialCigarettes);
+      localStorage.setItem("lastResetTime", now.toISOString());
     }
-
-    setTarget(newTarget);
   };
 
   useEffect(() => {
-    // Load the target and check for update every 2 minutes
-    checkAndUpdateTarget();
-
-    const interval = setInterval(() => {
-      checkAndUpdateTarget();
-    }, 60000); // Check every minute to ensure timely updates
-
-    return () => clearInterval(interval); // Cleanup on unmount
+    checkReset();
   }, []);
 
-  console.log({ target });
+  const handleDecrement = () => {
+    checkReset(); // Re-check before decrementing to ensure reset logic is applied
+
+    if (cigarettesLeft > 0) {
+      const newCigarettesLeft = cigarettesLeft - 1;
+      setCigarettesLeft(newCigarettesLeft);
+      localStorage.setItem("cigarettesLeft", newCigarettesLeft);
+    }
+  };
 
   return (
-    <div className="h-screen w-screen bg-sigarate">
-      <button
-        className="text-xl font-semibold text-white"
-        onClick={handleOpenModal}
-      >
-        reset
-      </button>
-      <Counter target={target} />
-
-      <ResetModal isOpen={isModalOpen} onClose={handleCloseModal} />
+    <div className="h-screen overflow-hidden flex flex-col bg-gray-100">
+      <Header />
+      <main className="flex-grow flex flex-col justify-center items-center text-center px-4">
+        <h1 className="text-3xl font-bold mb-4">
+          Cigarettes You Can Smoke Today:
+        </h1>
+        <div className="text-6xl font-bold text-blue-600 mb-6">
+          {cigarettesLeft}
+        </div>
+        <button
+          onClick={handleDecrement}
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700"
+        >
+          Smoke 1
+        </button>
+      </main>
     </div>
   );
-}
+};
+
+export default Main;
