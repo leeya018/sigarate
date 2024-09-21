@@ -26,7 +26,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-gray-100">
+    <div className="h-screen w-screen overflow-hidden flex flex-col text-white">
       <Header />
       <main className="flex-grow flex flex-col justify-center items-center text-center px-4">
         <h1 className="text-3xl font-bold mb-6">Settings</h1>
@@ -39,9 +39,14 @@ const Settings = () => {
             value={initialCigarettes}
             onChange={(e) => {
               setInitialCigarettes(parseInt(e.target.value, 10));
+              localStorage.setItem(
+                "cigarettesLeft",
+                parseInt(e.target.value, 10).toString()
+              );
+
               sethasChange(true);
             }}
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-3 py-2 border rounded-lg  text-black"
           />
         </div>
         <div className="mb-4 max-w-xs">
@@ -55,7 +60,7 @@ const Settings = () => {
               setDecreaseAmount(parseInt(e.target.value, 10));
               sethasChange(true);
             }}
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-3 py-2 border rounded-lg  text-black"
           />
         </div>
         <div className="mb-6 max-w-xs">
@@ -69,7 +74,7 @@ const Settings = () => {
               setDaysBetweenDecreases(parseInt(e.target.value, 10));
               sethasChange(true);
             }}
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-3 py-2 border rounded-lg  text-black"
           />
         </div>
         <button

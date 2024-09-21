@@ -64,15 +64,13 @@ const Main = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden flex flex-col bg-gray-100">
+    <div className="h-screen w-screen overflow-hidden flex flex-col  text-white  ">
       <Header />
       <main className="flex-grow flex flex-col justify-center items-center text-center px-4">
         <h1 className="text-3xl font-bold mb-4">
           Cigarettes You Can Smoke Today:
         </h1>
-        <div className="text-6xl font-bold text-blue-600 mb-6">
-          {cigarettesLeft}
-        </div>
+        <div className="text-6xl font-bold -600 mb-6">{cigarettesLeft}</div>
         {cigarettesLeft > 0 && (
           <button
             onClick={handleDecrement}
