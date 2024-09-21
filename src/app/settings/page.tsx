@@ -1,28 +1,46 @@
 "use client";
 
 import Header from "@/components/Header";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Settings = () => {
-  const [hasChange, sethasChange] = useState(true);
-  const [initialCigarettes, setInitialCigarettes] = useState<number>(
-    parseInt(localStorage.getItem("initialCigarettes") || "12", 10) || 20 // Fallback to "12" if null
-  );
-  const [decreaseAmount, setDecreaseAmount] = useState<number>(
-    parseInt(localStorage.getItem("decreaseAmount") || "1", 10) // Fallback to "1" if null
-  );
-  const [daysBetweenDecreases, setDaysBetweenDecreases] = useState<number>(
-    parseInt(localStorage.getItem("daysBetweenDecreases") || "1", 10) // Fallback to "1" if null
-  );
+  const [hasChange, setHasChange] = useState(true);
+  const [initialCigarettes, setInitialCigarettes] = useState<number>(12);
+  const [decreaseAmount, setDecreaseAmount] = useState<number>(1);
+  const [daysBetweenDecreases, setDaysBetweenDecreases] = useState<number>(1);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Check if running on client-side
+      const storedInitialCigarettes = localStorage.getItem("initialCigarettes");
+      const storedDecreaseAmount = localStorage.getItem("decreaseAmount");
+      const storedDaysBetweenDecreases = localStorage.getItem(
+        "daysBetweenDecreases"
+      );
+
+      if (storedInitialCigarettes) {
+        setInitialCigarettes(parseInt(storedInitialCigarettes, 10));
+      }
+      if (storedDecreaseAmount) {
+        setDecreaseAmount(parseInt(storedDecreaseAmount, 10));
+      }
+      if (storedDaysBetweenDecreases) {
+        setDaysBetweenDecreases(parseInt(storedDaysBetweenDecreases, 10));
+      }
+    }
+  }, []);
 
   const handleSave = () => {
-    sethasChange(false);
-    localStorage.setItem("initialCigarettes", initialCigarettes.toString()); // Ensure the value is stored as a string
-    localStorage.setItem("decreaseAmount", decreaseAmount.toString()); // Ensure the value is stored as a string
-    localStorage.setItem(
-      "daysBetweenDecreases",
-      daysBetweenDecreases.toString()
-    ); // Ensure the value is stored as a string
+    setHasChange(false);
+    if (typeof window !== "undefined") {
+      // Ensure running on client-side
+      localStorage.setItem("initialCigarettes", initialCigarettes.toString());
+      localStorage.setItem("decreaseAmount", decreaseAmount.toString());
+      localStorage.setItem(
+        "daysBetweenDecreases",
+        daysBetweenDecreases.toString()
+      );
+    }
   };
 
   return (
@@ -43,10 +61,9 @@ const Settings = () => {
                 "cigarettesLeft",
                 parseInt(e.target.value, 10).toString()
               );
-
-              sethasChange(true);
+              setHasChange(true);
             }}
-            className="w-full px-3 py-2 border rounded-lg  text-black"
+            className="w-full px-3 py-2 border rounded-lg text-black"
           />
         </div>
         <div className="mb-4 max-w-xs">
@@ -58,9 +75,9 @@ const Settings = () => {
             value={decreaseAmount}
             onChange={(e) => {
               setDecreaseAmount(parseInt(e.target.value, 10));
-              sethasChange(true);
+              setHasChange(true);
             }}
-            className="w-full px-3 py-2 border rounded-lg  text-black"
+            className="w-full px-3 py-2 border rounded-lg text-black"
           />
         </div>
         <div className="mb-6 max-w-xs">
@@ -72,16 +89,16 @@ const Settings = () => {
             value={daysBetweenDecreases}
             onChange={(e) => {
               setDaysBetweenDecreases(parseInt(e.target.value, 10));
-              sethasChange(true);
+              setHasChange(true);
             }}
-            className="w-full px-3 py-2 border rounded-lg  text-black"
+            className="w-full px-3 py-2 border rounded-lg text-black"
           />
         </div>
         <button
           onClick={handleSave}
           className={`${
-            hasChange ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-600 "
-          }  text-white px-6 py-3 rounded-lg font-semibold`}
+            hasChange ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-600"
+          } text-white px-6 py-3 rounded-lg font-semibold`}
         >
           שמור
         </button>
